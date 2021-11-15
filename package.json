@@ -1,0 +1,30 @@
+{
+  "name": "dalso-server",
+  "version": "1.0.0",
+  "description": "Lorem ipsum dolor sit amet",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "NODE_ENV=development nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alvinarkansas/dalso-server.git"
+  },
+  "author": "Alvin Arkansas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alvinarkansas/dalso-server/issues"
+  },
+  "homepage": "https://github.com/alvinarkansas/dalso-server#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "pg": "^8.7.1",
+    "sequelize": "^6.9.0"
+  },
+  "devDependencies": {
+    "dotenv": "^10.0.0"
+  }
+}
