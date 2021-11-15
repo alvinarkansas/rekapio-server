@@ -1,4 +1,4 @@
-const { User, Category, Account } = require("../models");
+const { Account } = require("../models");
 
 class AccountController {
   static async findAll(req, res, next) {
