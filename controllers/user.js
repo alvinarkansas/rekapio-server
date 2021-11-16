@@ -34,6 +34,7 @@ class UserController {
         { name: "Healthcare", icon: "Stethoscope" },
         { name: "Pet", icon: "Paw" },
         { name: "Gift", icon: "Gift" },
+        { name: "Salary", icon: "Money" },
       ];
       defaultCategories = defaultCategories.map((defaultCategory) => ({
         ...defaultCategory,

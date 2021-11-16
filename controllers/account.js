@@ -1,10 +1,11 @@
 const { Account } = require("../models");
 
 class AccountController {
-  static async findAll(req, res, next) {
+  static async findAllOwn(req, res, next) {
     try {
       const accounts = await Account.findAll({
         order: [["name", "ASC"]],
+        where: { UserId: req.currentUserId },
       });
       res.status(200).json(accounts);
     } catch (error) {
