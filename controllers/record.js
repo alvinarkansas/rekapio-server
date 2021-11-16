@@ -54,23 +54,32 @@ class RecordController {
         UserId: req.currentUserId,
       });
 
-      const currentAccountInfo = await Account.increment(
-        { current_balance: amount },
-        { where: { id: AccountId } }
-      );
+      let response = { new_record: newRecord };
 
-      // === Transfer Feature ===
+      let sourceAccount = null;
+      let destinationAccount = null;
+      let currentAccountInfo = null;
 
-      // if (DestinationAccountId) {
-      //
-      // }
+      if (type === "transfer" && DestinationAccountId) {
+        sourceAccount = await Account.decrement(
+          { current_balance: amount },
+          { where: { id: AccountId } }
+        );
+        destinationAccount = await Account.increment(
+          { current_balance: amount },
+          { where: { id: DestinationAccountId } }
+        );
+        response["sourceAccount"] = sourceAccount[0][0][0];
+        response["destinationAccount"] = destinationAccount[0][0][0];
+      } else {
+        currentAccountInfo = await Account.increment(
+          { current_balance: amount },
+          { where: { id: AccountId } }
+        );
+        response["currentAccountInfo"] = currentAccountInfo[0][0][0];
+      }
 
-      // === Transfer Feature ===
-
-      res.status(201).json({
-        new_record: newRecord,
-        current_account_info: currentAccountInfo[0][0][0],
-      });
+      res.status(201).json(response);
     } catch (error) {
       next(error);
     }
