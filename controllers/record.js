@@ -58,7 +58,7 @@ class RecordController {
 
       let sourceAccount = null;
       let destinationAccount = null;
-      let currentAccountInfo = null;
+      let currentAccount = null;
 
       if (type === "transfer" && DestinationAccountId) {
         sourceAccount = await Account.decrement(
@@ -69,14 +69,14 @@ class RecordController {
           { current_balance: amount },
           { where: { id: DestinationAccountId } }
         );
-        response["sourceAccount"] = sourceAccount[0][0][0];
-        response["destinationAccount"] = destinationAccount[0][0][0];
+        response["source_account"] = sourceAccount[0][0][0];
+        response["destination_account"] = destinationAccount[0][0][0];
       } else {
-        currentAccountInfo = await Account.increment(
+        currentAccount = await Account.increment(
           { current_balance: amount },
           { where: { id: AccountId } }
         );
-        response["currentAccountInfo"] = currentAccountInfo[0][0][0];
+        response["current_account"] = currentAccount[0][0][0];
       }
 
       res.status(201).json(response);
@@ -99,8 +99,11 @@ class RecordController {
     const { id } = req.params;
 
     try {
-      const { amount: oldAmount, AccountId: oldAccountId } =
-        await Record.findOne({ where: { id } });
+      const {
+        amount: oldAmount,
+        AccountId: oldAccountId,
+        DestinationAccountId: oldDestinationAccountId,
+      } = await Record.findOne({ where: { id } });
 
       const updatedRecord = await Record.update(
         {
@@ -115,20 +118,46 @@ class RecordController {
         { where: { id }, returning: true }
       );
 
-      const oldAccountInfo = await Account.increment(
-        { current_balance: oldAmount * -1 },
-        { where: { id: oldAccountId } }
-      );
-      const currentAccountInfo = await Account.increment(
-        { current_balance: amount },
-        { where: { id: AccountId } }
-      );
+      let response = { updated_record: updatedRecord[1][0] };
 
-      res.status(200).json({
-        updated_record: updatedRecord[1][0],
-        old_account_info: oldAccountInfo[0][0][0],
-        current_account_info: currentAccountInfo[0][0][0],
-      });
+      let sourceAccount = null;
+      let destinationAccount = null;
+      let oldAccount = null;
+      let currentAccount = null;
+
+      if (type === "transfer" && DestinationAccountId) {
+        await Account.increment(
+          { current_balance: oldAmount },
+          { where: { id: oldAccountId } }
+        );
+        await Account.decrement(
+          { current_balance: oldAmount },
+          { where: { id: oldDestinationAccountId } }
+        );
+        sourceAccount = await Account.decrement(
+          { current_balance: amount },
+          { where: { id: AccountId } }
+        );
+        destinationAccount = await Account.increment(
+          { current_balance: amount },
+          { where: { id: DestinationAccountId } }
+        );
+        response["source_account"] = sourceAccount[0][0][0];
+        response["destination_account"] = destinationAccount[0][0][0];
+      } else {
+        oldAccount = await Account.increment(
+          { current_balance: oldAmount * -1 },
+          { where: { id: oldAccountId } }
+        );
+        currentAccount = await Account.increment(
+          { current_balance: amount },
+          { where: { id: AccountId } }
+        );
+        response["old_account"] = oldAccount[0][0][0];
+        response["current_account"] = currentAccount[0][0][0];
+      }
+
+      res.status(200).json(response);
     } catch (error) {
       next(error);
     }
