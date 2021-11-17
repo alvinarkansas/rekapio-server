@@ -1,10 +1,34 @@
 const { Category } = require("../models");
+const { Op } = require("sequelize");
 
 class CategoryController {
-  static async findAll(req, res, next) {
+  static async findAllOwn(req, res, next) {
+    const { term } = req.query;
+
+    let whereOption = null;
+
+    if (term) {
+      whereOption = {
+        [Op.and]: [
+          {
+            name: {
+              [Op.iLike]: `%${term.toLowerCase()}%`,
+            },
+          },
+          {
+            UserId: req.currentUserId,
+          },
+        ],
+      };
+    } else {
+      whereOption = {
+        UserId: req.currentUserId,
+      };
+    }
+
     try {
       const categories = await Category.findAll({
-        where: { UserId: req.currentUserId },
+        where: whereOption,
         order: [["name", "ASC"]],
       });
       res.status(200).json(categories);

@@ -1,4 +1,5 @@
 const { Record, Account } = require("../models");
+const { Op } = require("sequelize");
 const dayjs = require("dayjs");
 
 class RecordController {
@@ -6,7 +7,53 @@ class RecordController {
     try {
       let records = await Record.findAll({
         where: { UserId: req.currentUserId },
-        order: [["updatedAt", "DESC"]],
+        order: [["time", "DESC"]],
+      });
+
+      const result = Object.values(
+        records.reduce((acc, item) => {
+          const formatted_time = dayjs(item.time).format("YYYY-MM-DD");
+
+          if (acc[formatted_time]) {
+            acc[formatted_time].rows.push(item);
+          } else {
+            acc[formatted_time] = {
+              expired_date: formatted_time,
+              rows: [item],
+            };
+          }
+          return acc;
+        }, {})
+      );
+
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async findAllByAccIdAndGroupByDate(req, res, next) {
+    const { account_id } = req.params;
+
+    try {
+      let records = await Record.findAll({
+        where: {
+          [Op.or]: [
+            {
+              [Op.and]: [
+                { UserId: req.currentUserId },
+                { AccountId: account_id },
+              ],
+            },
+            {
+              [Op.and]: [
+                { UserId: req.currentUserId },
+                { DestinationAccountId: account_id },
+              ],
+            },
+          ],
+        },
+        order: [["time", "DESC"]],
       });
 
       const result = Object.values(
@@ -173,14 +220,14 @@ class RecordController {
       if (record) {
         deletedRecord = record;
         await Record.destroy({ where: { id } });
-        const currentAccountInfo = await Account.increment(
+        const currentAccount = await Account.increment(
           { current_balance: record.amount * -1 },
           { where: { id: record.AccountId } }
         );
 
         res.status(200).json({
           deleted_record: deletedRecord,
-          current_account_info: currentAccountInfo[0][0][0],
+          current_account: currentAccount[0][0][0],
         });
       } else {
         next({
