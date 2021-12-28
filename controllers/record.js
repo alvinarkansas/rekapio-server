@@ -250,15 +250,33 @@ class RecordController {
       if (record) {
         deletedRecord = record;
         await Record.destroy({ where: { id } });
-        const currentAccount = await Account.increment(
-          { current_balance: record.amount * -1 },
-          { where: { id: record.AccountId } }
-        );
 
-        res.status(200).json({
-          deleted_record: deletedRecord,
-          current_account: currentAccount[0][0][0],
-        });
+        let response = { deleted_record: deletedRecord };
+
+        let currentAccount = null;
+        let sourceAccount = null;
+        let destinationAccount = null;
+
+        if (record.type === "transfer") {
+          sourceAccount = await Account.increment(
+            { current_balance: record.amount },
+            { where: { id: record.AccountId } }
+          );
+          destinationAccount = await Account.decrement(
+            { current_balance: record.amount },
+            { where: { id: record.DestinationAccountId } }
+          );
+          response["source_account"] = sourceAccount[0][0][0];
+          response["destination_account"] = destinationAccount[0][0][0];
+        } else {
+          currentAccount = await Account.increment(
+            { current_balance: record.amount * -1 },
+            { where: { id: record.AccountId } }
+          );
+          response["current_account"] = currentAccount[0][0][0];
+        }
+
+        res.status(200).json(response);
       } else {
         next({
           status: 404,
