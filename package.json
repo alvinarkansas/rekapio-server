@@ -19,6 +19,7 @@
   "homepage": "https://github.com/alvinarkansas/dalso-server#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dayjs": "^1.10.7",
     "express": "^4.17.1",

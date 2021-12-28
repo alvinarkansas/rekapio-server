@@ -1,4 +1,5 @@
 const { Account } = require("../models");
+const { Op } = require("sequelize");
 
 class AccountController {
   static async findAllOwn(req, res, next) {
@@ -8,6 +9,20 @@ class AccountController {
         where: { UserId: req.currentUserId },
       });
       res.status(200).json(accounts);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async findOwnById(req, res, next) {
+    const { id } = req.params;
+    try {
+      const account = await Account.findOne({
+        where: {
+          [Op.and]: [{ id }, { UserId: req.currentUserId }],
+        },
+      });
+      res.status(200).json(account);
     } catch (error) {
       next(error);
     }

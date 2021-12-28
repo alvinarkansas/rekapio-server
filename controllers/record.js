@@ -1,30 +1,48 @@
-const { Record, Account } = require("../models");
+const { Record, Account, Category } = require("../models");
 const { Op } = require("sequelize");
 const dayjs = require("dayjs");
 
 class RecordController {
   static async findAllAndGroupByDate(req, res, next) {
+    const { group, limit, offset } = req.query;
+    let result = [];
     try {
       let records = await Record.findAll({
         where: { UserId: req.currentUserId },
         order: [["time", "DESC"]],
+        limit,
+        offset,
+        include: [
+          {
+            model: Category,
+            attributes: ["id", "color", "name", "icon"],
+          },
+          {
+            model: Account,
+            attributes: ["id", "color", "name"],
+          },
+        ],
       });
 
-      const result = Object.values(
-        records.reduce((acc, item) => {
-          const formatted_time = dayjs(item.time).format("YYYY-MM-DD");
+      result = records;
 
-          if (acc[formatted_time]) {
-            acc[formatted_time].rows.push(item);
-          } else {
-            acc[formatted_time] = {
-              expired_date: formatted_time,
-              rows: [item],
-            };
-          }
-          return acc;
-        }, {})
-      );
+      if (group && group === "date") {
+        result = Object.values(
+          records.reduce((acc, item) => {
+            const formatted_time = dayjs(item.time).format("YYYY-MM-DD");
+
+            if (acc[formatted_time]) {
+              acc[formatted_time].rows.push(item);
+            } else {
+              acc[formatted_time] = {
+                time: formatted_time,
+                rows: [item],
+              };
+            }
+            return acc;
+          }, {})
+        );
+      }
 
       res.status(200).json(result);
     } catch (error) {
@@ -54,6 +72,16 @@ class RecordController {
           ],
         },
         order: [["time", "DESC"]],
+        include: [
+          {
+            model: Category,
+            attributes: ["id", "color", "name", "icon"],
+          },
+          {
+            model: Account,
+            attributes: ["id", "color", "name"],
+          },
+        ],
       });
 
       const result = Object.values(
@@ -62,9 +90,11 @@ class RecordController {
 
           if (acc[formatted_time]) {
             acc[formatted_time].rows.push(item);
+            acc[formatted_time].total += item.amount;
           } else {
             acc[formatted_time] = {
-              expired_date: formatted_time,
+              time: formatted_time,
+              total: item.amount,
               rows: [item],
             };
           }

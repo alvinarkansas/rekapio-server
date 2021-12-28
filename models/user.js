@@ -1,6 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
-const { hashPassword } = require('../helpers/bcrypt');
+const { hashPassword } = require("../helpers/bcrypt");
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {}
@@ -36,6 +36,9 @@ module.exports = (sequelize, DataTypes) => {
             msg: "Password should at least have 6 characers",
           },
         },
+      },
+      token_version: {
+        type: DataTypes.INTEGER,
       },
     },
     {

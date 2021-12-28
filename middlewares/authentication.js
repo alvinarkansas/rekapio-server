@@ -1,9 +1,9 @@
-const { verify } = require("../helpers/jwt");
+const { verifyAccessToken } = require("../helpers/jwt");
 const { User } = require("../models/index");
 
 module.exports = function (req, res, next) {
   try {
-    req.decoded = verify(req.headers.token);
+    req.decoded = verifyAccessToken(req.headers.authorization);
     User.findOne({
       where: {
         id: req.decoded.id,
