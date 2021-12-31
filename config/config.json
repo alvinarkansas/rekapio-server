@@ -15,6 +15,10 @@
   },
   "production": {
     "use_env_variable": "DATABASE_URL",
+    "username": "cdamxazoplrymc",
+    "password": "64bbe8f0574ad1b3737073699262dae1baee27364487dd67aaef65bcd1a4ae40",
+    "database": "ddpqao55o90c8f",
+    "host": "ec2-34-236-87-247.compute-1.amazonaws.com",
     "dialect": "postgres",
     "protocol": null,
     "dialectOptions": {
