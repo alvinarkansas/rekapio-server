@@ -1,2 +1,2 @@
-# dalso-server
-Lorem ipsum dolor sit amet
+# rekapio-server
+A server for a private expense tracker app
