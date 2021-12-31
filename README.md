@@ -1,2 +1,2 @@
 # rekapio-server
-Lorem ipsum dolor sit amet
+A server for a private expense tracker app
