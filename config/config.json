@@ -23,7 +23,6 @@
     "protocol": null,
     "dialectOptions": {
       "ssl": {
-        "require": true,
         "rejectUnauthorized": false
       }
     }
