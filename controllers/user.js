@@ -8,15 +8,12 @@ const { comparePassword } = require("../helpers/bcrypt");
 
 class UserController {
   static async signUp(req, res, next) {
-    console.log("👉 line 11");
     try {
-      console.log("👉 line 13");
       const newUser = await User.create({
         name: req.body.name,
         email: req.body.email,
         password: req.body.password,
       });
-      console.log("👉 line 19", newUser);
 
       const accessTokenPayload = {
         id: newUser.id,
@@ -25,7 +22,7 @@ class UserController {
       };
       const refreshTokenPayload = {
         ...accessTokenPayload,
-        token_version: user.token_version,
+        token_version: newUser.token_version,
       };
       const accessToken = generateAccessToken(accessTokenPayload);
 
