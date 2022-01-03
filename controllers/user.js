@@ -53,11 +53,14 @@ class UserController {
       await Account.create({
         name: "Cash",
         current_balance: 0,
+        color: "#FF950A",
         UserId: newUser.id,
       });
 
       res.cookie("jid", generateRefreshToken(refreshTokenPayload), {
         httpOnly: true,
+        sameSite: 'None',
+        secure: true,
       });
       res.status(201).json({ access_token: accessToken });
     } catch (error) {
@@ -92,6 +95,8 @@ class UserController {
             const accessToken = generateAccessToken(accessTokenPayload);
             res.cookie("jid", generateRefreshToken(refreshTokenPayload), {
               httpOnly: true,
+              sameSite: 'None',
+              secure: true,
             });
             res.status(200).json({ access_token: accessToken });
           } else {
@@ -113,6 +118,7 @@ class UserController {
   }
 
   static async generateNewToken(req, res, next) {
+    console.log("🍪", req.cookies);
     const token = req.cookies?.jid;
     if (!token) {
       return res.status(401).json({ authenticated: false, access_token: "" });
