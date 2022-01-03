@@ -27,22 +27,22 @@ class UserController {
       const accessToken = generateAccessToken(accessTokenPayload);
 
       let defaultCategories = [
-        { name: "Food", icon: "Utensils" },
-        { name: "Snacks", icon: "Croissant" },
-        { name: "Coffee", icon: "Coffee" },
-        { name: "Grocery", icon: "Carrot" },
-        { name: "Entertainment", icon: "Film" },
-        { name: "Shopping", icon: "Shopping-cart" },
-        { name: "Mortgage", icon: "Home" },
-        { name: "Academic", icon: "Graduation-cap" },
-        { name: "Transportation", icon: "Car" },
-        { name: "Book", icon: "Book" },
-        { name: "Beauty", icon: "Lipstick" },
-        { name: "Donation", icon: "Hand-holding-heart" },
-        { name: "Healthcare", icon: "Stethoscope" },
-        { name: "Pet", icon: "Paw" },
-        { name: "Gift", icon: "Gift" },
-        { name: "Salary", icon: "Money" },
+        { name: "Food", icon: "Utensils", color: "#FA982A" },
+        { name: "Snacks", icon: "Croissant", color: "#F9C43B" },
+        { name: "Coffee", icon: "Coffee", color: "#E88873" },
+        { name: "Grocery", icon: "Carrot", color: "#FE5B62" },
+        { name: "Entertainment", icon: "Film", color: "#A54D53" },
+        { name: "Shopping", icon: "Shopping-cart", color: "#E840E1" },
+        { name: "Mortgage", icon: "Home", color: "#EA25A7" },
+        { name: "Academic", icon: "Graduation-cap", color: "#831985" },
+        { name: "Transportation", icon: "Car", color: "#A6009F" },
+        { name: "Book", icon: "Book", color: "#73CDFF" },
+        { name: "Beauty", icon: "Lipstick", color: "#25A3EA" },
+        { name: "Donation", icon: "Hand-holding-heart", color: "#FF7A00" },
+        { name: "Healthcare", icon: "Stethoscope", color: "#3B708D" },
+        { name: "Pet", icon: "Paw", color: "#6CAD9D" },
+        { name: "Gift", icon: "Gift", color: "#B5446E" },
+        { name: "Salary", icon: "Money", color: "#0DA666" },
       ];
       defaultCategories = defaultCategories.map((defaultCategory) => ({
         ...defaultCategory,
@@ -118,7 +118,6 @@ class UserController {
   }
 
   static async generateNewToken(req, res, next) {
-    console.log("🍪", req.cookies);
     const token = req.cookies?.jid;
     if (!token) {
       return res.status(401).json({ authenticated: false, access_token: "" });
