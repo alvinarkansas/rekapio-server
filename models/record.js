@@ -19,7 +19,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   Record.associate = function (models) {
-    Record.belongsTo(models.Account);
+    Record.belongsTo(models.Account, { foreignKey: 'AccountId', as: "Account" });
+    Record.belongsTo(models.Account, { foreignKey: 'DestinationAccountId', as: "DestinationAccount" });
     Record.belongsTo(models.Category);
     Record.belongsTo(models.User);
   };

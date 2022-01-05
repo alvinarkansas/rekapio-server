@@ -20,6 +20,12 @@ class RecordController {
           {
             model: Account,
             attributes: ["id", "color", "name"],
+            as: "Account",
+          },
+          {
+            model: Account,
+            attributes: ["id", "color", "name"],
+            as: "DestinationAccount",
           },
         ],
       });
@@ -80,6 +86,12 @@ class RecordController {
           {
             model: Account,
             attributes: ["id", "color", "name"],
+            as: "Account",
+          },
+          {
+            model: Account,
+            attributes: ["id", "color", "name"],
+            as: "DestinationAccount",
           },
         ],
       });
