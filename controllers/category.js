@@ -3,32 +3,27 @@ const { Op } = require("sequelize");
 
 class CategoryController {
   static async findAllOwn(req, res, next) {
-    const { term } = req.query;
+    const { term, visible } = req.query;
 
-    let whereOption = null;
+    let whereOption = [];
 
     if (term) {
-      whereOption = {
-        [Op.and]: [
-          {
-            name: {
-              [Op.iLike]: `%${term.toLowerCase()}%`,
-            },
-          },
-          {
-            UserId: req.currentUserId,
-          },
-        ],
-      };
-    } else {
-      whereOption = {
-        UserId: req.currentUserId,
-      };
+      whereOption.push({
+        name: {
+          [Op.iLike]: `%${term.toLowerCase()}%`,
+        },
+      });
     }
+    if (visible) {
+      whereOption.push({ visible: true });
+    }
+    whereOption.push({
+      UserId: req.currentUserId,
+    });
 
     try {
       const categories = await Category.findAll({
-        where: whereOption,
+        where: { [Op.and]: whereOption },
         order: [["name", "ASC"]],
       });
       res.status(200).json(categories);
@@ -54,12 +49,12 @@ class CategoryController {
   }
 
   static async update(req, res, next) {
-    const { name, icon, color } = req.body;
+    const { name, icon, color, visible } = req.body;
     const { id } = req.params;
 
     try {
       const updatedCategory = await Category.update(
-        { name, icon, color },
+        { name, icon, color, visible },
         { where: { id }, returning: true }
       );
       res.status(200).json(updatedCategory[1][0]);

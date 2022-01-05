@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       icon: DataTypes.STRING,
       color: DataTypes.STRING,
+      visible: DataTypes.BOOLEAN,
       UserId: DataTypes.INTEGER,
     },
     {
