@@ -161,13 +161,14 @@ class RecordController {
       });
 
       console.log("⚫⚫⚫⚫⚫⚫⚫⚫⚫⚫⚫⚫⚫⚫⚫⚫⚫⚫");
-      console.log("RECORDS: ", records);
       for (let record of records) {
         console.log("<> <> <> <> < RECORDS > <> <> <> <>");
         console.log("id            :", record.id);
         console.log("category name :", record.Category.name);
+        console.log("account       :", record.Account.name);
         console.log("amount        :", record.amount);
         console.log("time          :", record.time);
+        console.log("note          :", record.note);
       }
 
       const summary = Object.values(
@@ -175,8 +176,10 @@ class RecordController {
           console.log("<> <> <> <> < REDUCE ITEMS > <> <> <> <>");
           console.log("id            :", item.id);
           console.log("category name :", item.Category.name);
+          console.log("account       :", item.Account.name);
           console.log("amount        :", item.amount);
           console.log("time          :", item.time);
+          console.log("note          :", item.note);
           const category = item.Category;
 
           if (acc[category.id]) {
