@@ -100,13 +100,18 @@ class RecordController {
         records.reduce((acc, item) => {
           const formatted_time = dayjs(item.time).format("YYYY-MM-DD");
 
+          let appliedAmount = item.amount;
+          if (item.type === "transfer" && item.AccountId == account_id) {
+            appliedAmount *= -1;
+          }
+
           if (acc[formatted_time]) {
             acc[formatted_time].rows.push(item);
-            acc[formatted_time].total += item.amount;
+            acc[formatted_time].total += appliedAmount;
           } else {
             acc[formatted_time] = {
               time: formatted_time,
-              total: item.amount,
+              total: appliedAmount,
               rows: [item],
             };
           }
@@ -125,12 +130,6 @@ class RecordController {
 
     const parsedStart = dayjs.unix(+start);
     const parsedEnd = dayjs.unix(+end);
-
-    console.log("parsedStart");
-    console.log(parsedStart.toDate());
-    console.log("parsedEnd");
-    console.log(parsedEnd.toDate());
-    console.log(dayjs().subtract(1, "day").toDate());
 
     try {
       const records = await Record.findAll({
