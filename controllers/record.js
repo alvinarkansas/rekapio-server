@@ -139,6 +139,7 @@ class RecordController {
             [Op.lte]: parsedEnd.toDate(),
           },
           type: "expense",
+          UserId: req.currentUserId,
         },
         order: [["time", "DESC"]],
         attributes: ["id", "type", "amount", "time"],
@@ -168,7 +169,6 @@ class RecordController {
         console.log("account       :", record.Account.name);
         console.log("amount        :", record.amount);
         console.log("time          :", record.time);
-        console.log("note          :", record.note);
       }
 
       const summary = Object.values(
@@ -179,7 +179,6 @@ class RecordController {
           console.log("account       :", item.Account.name);
           console.log("amount        :", item.amount);
           console.log("time          :", item.time);
-          console.log("note          :", item.note);
           const category = item.Category;
 
           if (acc[category.id]) {
