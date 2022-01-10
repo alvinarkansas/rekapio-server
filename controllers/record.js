@@ -145,7 +145,7 @@ class RecordController {
         include: [
           {
             model: Category,
-            attributes: ["id", "color", "name", "icon"],
+            attributes: ["id", "color", "name", "icon", "visible"],
           },
           {
             model: Account,
@@ -161,19 +161,23 @@ class RecordController {
       });
 
       const summary = Object.values(
-        records.reduce((acc, item) => {
-          const category = item.Category;
+        records
+          .filter((record) => record.Category.visible)
+          .reduce((acc, item) => {
+            const category = item.Category;
 
-          if (acc[category.id]) {
-            acc[category.id].spent += Math.abs(item.amount);
-          } else {
-            acc[category.id] = {
-              category: category.name,
-              spent: Math.abs(item.amount),
-            };
-          }
-          return acc;
-        }, {})
+            if (acc[category.id]) {
+              acc[category.id].spent += Math.abs(item.amount);
+            } else {
+              acc[category.id] = {
+                category_name: category.name,
+                category_icon: category.icon,
+                category_color: category.color,
+                spent: Math.abs(item.amount),
+              };
+            }
+            return acc;
+          }, {})
       );
 
       res.status(200).json({ start: parsedStart, end: parsedEnd, summary });
