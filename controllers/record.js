@@ -120,6 +120,69 @@ class RecordController {
     }
   }
 
+  static async summarize(req, res, next) {
+    const { start, end } = req.query;
+
+    const parsedStart = dayjs.unix(+start);
+    const parsedEnd = dayjs.unix(+end);
+
+    console.log("parsedStart");
+    console.log(parsedStart.toDate());
+    console.log("parsedEnd");
+    console.log(parsedEnd.toDate());
+    console.log(dayjs().subtract(1, "day").toDate());
+
+    try {
+      const records = await Record.findAll({
+        where: {
+          time: {
+            [Op.gte]: parsedStart.toDate(),
+            [Op.lte]: parsedEnd.toDate(),
+          },
+          type: "expense",
+        },
+        order: [["time", "DESC"]],
+        attributes: ["id", "type", "amount", "time"],
+        include: [
+          {
+            model: Category,
+            attributes: ["id", "color", "name", "icon"],
+          },
+          {
+            model: Account,
+            attributes: ["id", "color", "name"],
+            as: "Account",
+          },
+          {
+            model: Account,
+            attributes: ["id", "color", "name"],
+            as: "DestinationAccount",
+          },
+        ],
+      });
+
+      const summary = Object.values(
+        records.reduce((acc, item) => {
+          const category = item.Category;
+
+          if (acc[category.id]) {
+            acc[category.id].spent += Math.abs(item.amount);
+          } else {
+            acc[category.id] = {
+              category: category.name,
+              spent: Math.abs(item.amount),
+            };
+          }
+          return acc;
+        }, {})
+      );
+
+      res.status(200).json({ start: parsedStart, end: parsedEnd, summary });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   static async add(req, res, next) {
     try {
       const {

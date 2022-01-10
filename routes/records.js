@@ -4,6 +4,7 @@ const recordValidator = require("../middlewares/recordValidator");
 const RecordController = require("../controllers/record");
 
 router.get("/", RecordController.findAllAndGroupByDate);
+router.get("/summary", RecordController.summarize);
 router.get("/:account_id", RecordController.findAllByAccIdAndGroupByDate);
 router.post("/", recordValidator, RecordController.add);
 router.put("/:id", recordAuthorization, recordValidator, RecordController.update);
