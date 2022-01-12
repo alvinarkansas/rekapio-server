@@ -161,24 +161,8 @@ class RecordController {
         ],
       });
 
-      console.log("⚫⚫⚫⚫⚫⚫⚫⚫⚫⚫⚫⚫⚫⚫⚫⚫⚫⚫");
-      for (let record of records) {
-        console.log("<> <> <> <> < RECORDS > <> <> <> <>");
-        console.log("id            :", record.id);
-        console.log("category name :", record.Category.name);
-        console.log("account       :", record.Account.name);
-        console.log("amount        :", record.amount);
-        console.log("time          :", record.time);
-      }
-
       const summary = Object.values(
         records.reduce((acc, item) => {
-          console.log("<> <> <> <> < REDUCE ITEMS > <> <> <> <>");
-          console.log("id            :", item.id);
-          console.log("category name :", item.Category.name);
-          console.log("account       :", item.Account.name);
-          console.log("amount        :", item.amount);
-          console.log("time          :", item.time);
           const category = item.Category;
 
           if (acc[category.id]) {
@@ -195,7 +179,13 @@ class RecordController {
         }, {})
       );
 
-      res.status(200).json({ start: parsedStart, end: parsedEnd, summary });
+      res
+        .status(200)
+        .json({
+          start: dayjs(parsedStart).format(),
+          end: dayjs(parsedEnd).format(),
+          summary,
+        });
     } catch (error) {
       next(error);
     }
