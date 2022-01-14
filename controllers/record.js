@@ -179,13 +179,58 @@ class RecordController {
         }, {})
       );
 
-      res
-        .status(200)
-        .json({
-          start: dayjs(parsedStart).format(),
-          end: dayjs(parsedEnd).format(),
-          summary,
-        });
+      res.status(200).json({
+        start: dayjs(parsedStart).format(),
+        end: dayjs(parsedEnd).format(),
+        summary,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async getCashFlow(req, res, next) {
+    const { start, end } = req.query;
+
+    const parsedStart = dayjs.unix(+start);
+    const parsedEnd = dayjs.unix(+end);
+
+    try {
+      const records = await Record.findAll({
+        where: {
+          time: {
+            [Op.gte]: parsedStart.toDate(),
+            [Op.lte]: parsedEnd.toDate(),
+          },
+          UserId: req.currentUserId,
+        },
+        attributes: ["amount", "type", "time"],
+      });
+
+      for (let rec of records) {
+        console.log("time    :", dayjs(rec.time).format("D MMM YYYY"));
+        console.log("type    :", rec.type);
+        console.log("amount  :", rec.amount);
+      }
+
+      const income = records
+        .filter((rec) => rec.type === "income")
+        .reduce((acc, current) => {
+          return acc + current.amount;
+        }, 0);
+
+      const expense = records
+        .filter((rec) => rec.type === "expense")
+        .reduce((acc, current) => {
+          return acc + current.amount;
+        }, 0);
+
+      res.status(200).json({
+        start: dayjs(parsedStart).format(),
+        end: dayjs(parsedEnd).format(),
+        income,
+        expense,
+      });
     } catch (error) {
       next(error);
     }
