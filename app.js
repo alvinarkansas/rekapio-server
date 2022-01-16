@@ -15,7 +15,7 @@ app.use(
       "http://localhost:3001",
       "https://localhost:3001",
       "https://rekapio.netlify.app",
-      "https://deploy-preview-12--rekapio.netlify.app/",
+      "https://deploy-preview-12--rekapio.netlify.app",
     ],
   })
 );
