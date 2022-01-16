@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       current_balance: DataTypes.INTEGER,
       color: DataTypes.STRING,
+      suspended: DataTypes.BOOLEAN,
       UserId: DataTypes.INTEGER,
     },
     {

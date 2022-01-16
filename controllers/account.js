@@ -6,7 +6,7 @@ class AccountController {
     try {
       const accounts = await Account.findAll({
         order: [["name", "ASC"]],
-        where: { UserId: req.currentUserId },
+        where: { UserId: req.currentUserId, suspended: false },
       });
       res.status(200).json(accounts);
     } catch (error) {
@@ -59,23 +59,20 @@ class AccountController {
     }
   }
 
-  static async delete(req, res, next) {
+  static async suspend(req, res, next) {
     const { id } = req.params;
-    let deletedAccount;
 
     try {
-      const account = await Account.findByPk(id);
+      const suspendedAccount = await Account.update(
+        { suspended: true },
+        { where: { id }, returning: true }
+      );
 
-      if (account) {
-        deletedAccount = account;
-        await Account.destroy({ where: { id } });
-        res.status(200).json(deletedAccount);
-      } else {
-        next({
-          status: 404,
-          message: "Account not found",
-        });
-      }
+      console.log(suspendedAccount[1][0].name);
+
+      res
+        .status(200)
+        .json({ message: `Account ${suspendedAccount[1][0].name} suspended` });
     } catch (error) {
       next(error);
     }

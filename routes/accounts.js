@@ -6,6 +6,6 @@ router.get("/", AccountController.findAllOwn);
 router.get("/:id", AccountController.findOwnById);
 router.post("/", AccountController.add);
 router.put("/:id", accountAuthorization, AccountController.update);
-router.delete("/:id", accountAuthorization, AccountController.delete);
+router.delete("/:id", accountAuthorization, AccountController.suspend);
 
 module.exports = router;
