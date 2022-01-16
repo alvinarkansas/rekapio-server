@@ -8,7 +8,17 @@ const app = express();
 const router = require("./routes/index");
 const PORT = process.env.PORT;
 
-app.use(cors({ credentials: true, origin: ["http://localhost:3001", "https://rekapio.netlify.app"] }));
+app.use(
+  cors({
+    credentials: true,
+    origin: [
+      "http://localhost:3001",
+      "https://localhost:3001",
+      "https://rekapio.netlify.app",
+      "https://deploy-preview-12--rekapio.netlify.app/",
+    ],
+  })
+);
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
