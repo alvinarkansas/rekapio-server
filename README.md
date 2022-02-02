@@ -1,2 +1,3 @@
 # rekapio-server
-A server for a private expense tracker app
+
+Backend for an expense tracker app
